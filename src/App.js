@@ -1,39 +1,25 @@
-import { useState } from 'react';
+import { lazy, useState, startTransition } from 'react';
 import './App.css';
 import Page1 from './components/page1';
 
+const Page2 = lazy(() => import('./components/page2'));
+const Page3 = lazy(() => import('./components/page3'));
+
 function App() {
-  const [routeDetails, setRouteDetails] = useState({
-    route: 'page1',
-    component: null,
-  });
+  const [route, setRoute] = useState('page1');
 
   const onPageChange = route => {
-    if (route === 'page1') {
-      setRouteDetails(prevState => ({ ...prevState, route: 'page1' }));
-    } else if (route === 'page2') {
-      import('./components/page2').then(Page2 => {
-        setRouteDetails(() => ({
-          route: 'page2',
-          component: Page2.default,
-        }));
-      });
-    } else {
-      import('./components/page3').then(Page3 => {
-        setRouteDetails(() => ({
-          route: 'page3',
-          component: Page3.default,
-        }));
-      });
-    }
+    startTransition(() => setRoute(route));
   };
 
   return (
     <div className='App'>
-      {routeDetails.route === 'page1' ? (
+      {route === 'page1' ? (
         <Page1 changePage={onPageChange} />
+      ) : route === 'page2' ? (
+        <Page2 changePage={onPageChange} />
       ) : (
-        <routeDetails.component changePage={onPageChange} />
+        <Page3 changePage={onPageChange} />
       )}
     </div>
   );

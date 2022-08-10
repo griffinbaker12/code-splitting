@@ -7,4 +7,5 @@ function Page2({ changePage }) {
     </div>
   );
 }
+
 export default Page2;
